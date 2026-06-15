@@ -1,0 +1,268 @@
+# 🔗 SnipURL — URL Shortener with Analytics
+
+A full stack URL shortener application where users can create short links, track clicks, and view detailed analytics. Built as part of the Katomaran Hackathon 2026.
+
+---
+
+## 🎥 Demo Video
+
+> 📹 [Click here to watch the demo](https://www.youtube.com/your-link-here)
+> *(Replace this link with your Loom or YouTube video link before submitting)*
+
+---
+
+## 🏗️ Architecture
+┌─────────────────┐         ┌─────────────────┐        ┌─────────────────┐
+
+│                 │  REST   │                 │        │                 │
+
+│  React Frontend │ ──────► │  Express API    │──────► │    MongoDB      │
+
+│  (Vite, port    │         │  (Node.js,      │        │  (Local /       │
+
+│   5173)         │◄─────── │   port 4000)    │◄────── │   Atlas)        │
+
+│                 │  JSON   │                 │        │                 │
+
+└─────────────────┘         └─────────────────┘        └─────────────────┘
+
+### Request Flow
+1. User signs up / logs in → JWT token issued
+2. Token stored in localStorage → sent with every API request
+3. User submits long URL → backend generates 6-char short code via nanoid
+4. Short URL visits → backend increments click count + saves timestamp
+5. Dashboard fetches all URLs + analytics per link
+
+---
+
+## 📐 Planning Document
+
+### Features Planned
+| Feature | Status |
+|---|---|
+| User Signup & Login with JWT | ✅ Done |
+| Password hashing with bcryptjs | ✅ Done |
+| URL shortening with unique short code | ✅ Done |
+| Short URL redirect (server-side) | ✅ Done |
+| Click count tracking | ✅ Done |
+| Visit timestamp recording | ✅ Done |
+| User dashboard (list, copy, delete) | ✅ Done |
+| Analytics page per URL | ✅ Done |
+| Protected routes (frontend + backend) | ✅ Done |
+| Form validation (frontend + backend) | ✅ Done |
+| Responsive UI | ✅ Done |
+
+### Tech Stack Chosen
+| Layer | Technology | Reason |
+|---|---|---|
+| Frontend | React + Vite | Fast, component-based UI |
+| Routing | React Router DOM | Client-side navigation |
+| HTTP Client | Axios | Clean API calls with interceptors |
+| Backend | Node.js + Express | Lightweight REST API |
+| Database | MongoDB + Mongoose | Flexible schema for analytics |
+| Auth | JWT + bcryptjs | Stateless, secure authentication |
+| Short Code | nanoid | Unique, URL-safe short codes |
+| Dev Server | Nodemon | Auto-restart on file changes |
+
+---
+
+## ⚙️ Setup Instructions
+
+### Prerequisites
+Make sure you have the following installed:
+- Node.js v18+ → https://nodejs.org
+- Git → https://git-scm.com
+- MongoDB (local) or a MongoDB Atlas account
+
+### 1. Clone the Repository
+```bash
+git clone https://github.com/YOUR_USERNAME/url-shortener.git
+cd url-shortener
+```
+
+### 2. Setup the Backend
+```bash
+cd server
+npm install
+```
+
+Create a `.env` file inside the `server` folder: 
+PORT=4000
+
+MONGO_URI=mongodb://localhost:27017/urlshortener
+
+JWT_SECRET=mysupersecretkey123
+
+BASE_URL=http://localhost:4000
+
+Start the backend:
+```bash
+npm run dev
+```
+
+You should see:
+Server running on port 4000
+
+MongoDB connected
+
+### 3. Setup the Frontend
+Open a new terminal tab:
+```bash
+cd client
+npm install
+npm run dev
+```
+
+Open your browser at: **http://localhost:5173**
+
+---
+
+## 📁 Project Structure
+url-shortener/
+
+├── server/
+
+│   ├── config/
+
+│   │   └── db.js              # MongoDB connection
+
+│   ├── controllers/
+
+│   │   ├── authController.js  # Signup & Login logic
+
+│   │   └── urlController.js   # URL CRUD & analytics
+
+│   ├── middleware/
+
+│   │   └── auth.js            # JWT verification middleware
+
+│   ├── models/
+
+│   │   ├── User.js            # User schema
+
+│   │   └── Url.js             # URL + visits schema
+
+│   ├── routes/
+
+│   │   ├── auth.js            # /api/auth routes
+
+│   │   ├── url.js             # /api/urls routes
+
+│   │   └── redirect.js        # /:code redirect route
+
+│   ├── .env                   # Environment variables
+
+│   └── index.js               # Express app entry point
+
+│
+
+└── client/
+
+└── src/
+
+├── api/
+
+│   └── axios.js           # Axios instance with interceptor
+
+├── components/
+
+│   └── Navbar.jsx         # Top navigation bar
+
+├── context/
+
+│   └── AuthContext.jsx    # Global auth state
+
+├── pages/
+
+│   ├── Login.jsx          # Login page
+
+│   ├── Signup.jsx         # Signup page
+
+│   ├── Dashboard.jsx      # Main dashboard
+
+│   └── Analytics.jsx      # Per-URL analytics
+
+├── App.jsx                # Routes + auth protection
+
+└── main.jsx               # React entry point
+
+---
+
+## 🔌 API Endpoints
+
+| Method | Endpoint | Auth | Description |
+|---|---|---|---|
+| POST | /api/auth/signup | No | Register new user |
+| POST | /api/auth/login | No | Login and get token |
+| POST | /api/urls | Yes | Create short URL |
+| GET | /api/urls | Yes | Get all URLs for user |
+| DELETE | /api/urls/:id | Yes | Delete a URL |
+| GET | /api/urls/:id/analytics | Yes | Get analytics for URL |
+| GET | /:code | No | Redirect to original URL |
+
+---
+
+## 🧠 Assumptions Made
+
+1. Each short code is 6 characters long, generated by `nanoid` — collisions are extremely unlikely but not handled with retry logic.
+2. Users can only see and manage their own URLs — no admin panel.
+3. Analytics only track visit timestamps — no geolocation or device info.
+4. Passwords must be at least 1 character — no minimum length enforced beyond HTML required field.
+5. The app runs locally — no deployment configuration is included.
+6. MongoDB runs locally on the default port 27017.
+7. JWT tokens expire after 7 days.
+8. Only the last 10 visits are shown on the analytics page.
+
+---
+
+## 📸 Sample Output
+
+### Signup Response (from backend logs)
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "name": "Jeevikha"
+}
+```
+
+### MongoDB URL Document
+```json
+{
+  "_id": "6a2f87b380a357b7f8e64d24",
+  "user": "6a2f87b380a357b7f8e64d20",
+  "originalUrl": "https://www.example.com/very/long/url",
+  "shortCode": "aB3xYz",
+  "clicks": 5,
+  "visits": [
+    { "visitedAt": "2026-06-15T04:30:00.000Z" },
+    { "visitedAt": "2026-06-15T05:10:00.000Z" }
+  ],
+  "createdAt": "2026-06-15T04:00:00.000Z"
+}
+```
+
+### Server Logs
+Server running on port 4000
+
+MongoDB connected
+
+POST /api/auth/signup 201
+
+POST /api/urls 201
+
+GET /api/urls 200
+
+GET /aB3xYz → redirect to https://www.example.com/very/long/url
+
+---
+
+## 🛠️ Tools Used
+
+- **Claude AI** — Debugging
+- **VS Code** — Code editor
+- **Postman / curl** — API testing
+- **MongoDB Compass** — Database inspection
+
+---
+
+*This project is a part of a hackathon run by https://katomaran.com*
