@@ -7,7 +7,6 @@ A full stack URL shortener application where users can create short links, track
 ## 🎥 Demo Video
 
 > 📹 [Click here to watch the demo](https://www.youtube.com/your-link-here)
-> *(Replace this link with your Loom or YouTube video link before submitting)*
 
 ---
 
