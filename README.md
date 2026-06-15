@@ -6,7 +6,7 @@ A full stack URL shortener application where users can create short links, track
 
 ## 🎥 Demo Video
 
-> 📹 [Click here to watch the demo](https://www.youtube.com/your-link-here)
+> 📹 [Click here to watch the demo] https://youtu.be/SUbiwESdwgU?si=yQD72hLYHo9XPl3P
 
 ---
 
